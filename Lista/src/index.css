@@ -7,7 +7,8 @@
   --color-light: #f3f4f9;
   --color-slate-200: #e2e8f0;
   --color-slate-400: #94a3b8;
-
+  --color-metalic: #4682B4;
+  
   --color-black-900: #1E1E1E;
   --color-black-900-h: #2a2a2a;
 
@@ -16,6 +17,7 @@
   --color-blue-500-h: #3399ff;
 
   --color-green-500: #00B37E;
+  --color-green-500-h: #33C9A1;
   --color-green-900: #577c5e;
 
   --color-red-500: #F2003C;

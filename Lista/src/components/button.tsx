@@ -62,7 +62,7 @@ interface ButtonProps
   icon?: React.ComponentProps<typeof Icon>["svg"];
 }
 
-export default function Button({
+export function Button({
   variant,
   size,
   disabled,
