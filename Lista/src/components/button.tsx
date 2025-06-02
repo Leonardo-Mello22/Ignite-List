@@ -33,7 +33,7 @@ export const buttonVariants = cva(`
 export const buttonTextVariant = cva("",{
     variants: {
         variant: {
-            primary: "text-black-900"
+            primary: "text-white"
         }
     }, 
     defaultVariants: {
@@ -44,7 +44,7 @@ export const buttonTextVariant = cva("",{
 export const buttonIconVariant = cva("transition", {
     variants: {
         variant:{
-            primary: "fill-black-900"
+            primary: "fill-white"
         },
         size: {
             md: "w-5 h-5"
