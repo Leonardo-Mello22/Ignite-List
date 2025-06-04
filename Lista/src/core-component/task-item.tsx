@@ -11,17 +11,19 @@ import { InputText } from "../components/input-text";
 import { TaskState, type Task } from "../models/task";
 import { cx } from "class-variance-authority";
 import { useTask } from "../hooks/use-task";
+import { Skeleton } from "../components/skeleton";
 
 interface TaskItemProps {
     task: Task;
+    loading?: boolean;
 }
 
-export function TaskItem({ task }: TaskItemProps) {
+export function TaskItem({ task, loading }: TaskItemProps) {
     const [isEditing, setIsEditing] = React.useState(task?.state === TaskState.Creating);
 
     const [taskTitle, setTaskTitle] = React.useState(task.title || "");
 
-    const { updateTask, updateTaskStatus, deleteTask } = useTask();
+    const { updateTask, updateTaskStatus, deleteTask, isUpdatingTask, isDeletingTask } = useTask();
 
 
 
@@ -41,10 +43,10 @@ export function TaskItem({ task }: TaskItemProps) {
         setTaskTitle(e.target.value || "");
     }
 
-    function handleSaveTask(e: React.FormEvent<HTMLFormElement>) {
+    async function handleSaveTask(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         if (taskTitle.trim() !== "") {
-            updateTask(task.id, { title: taskTitle.trim() });
+            await updateTask(task.id, { title: taskTitle.trim() });
             setIsEditing(false);
         }
     }
@@ -54,8 +56,8 @@ export function TaskItem({ task }: TaskItemProps) {
         updateTaskStatus(task.id, checked)
     }
 
-    function handleClickDeleteTask(){
-        deleteTask(task.id);
+    async function handleClickDeleteTask(){
+       await deleteTask(task.id);
     }
 
     return (
@@ -65,21 +67,31 @@ export function TaskItem({ task }: TaskItemProps) {
                     <InputCheckbox 
                         checked={task?.conclued} 
                         onChange={handleUpdateTaskStatus}
+                        loading={loading}
                         />
-                    <Text
+                    {!loading ?<Text
                         className={cx("flex-1", {
                             "line-through": task?.conclued,
                         })}
                     >
                         {task?.title}
-                    </Text>
+                    </Text> : 
+                        <Skeleton className="flex-1 h-6"/>
+                    }
                     <div className="flex gap-1">
-                        <ButtonIcon type="button" icon={TrashIcon} onClick={handleClickDeleteTask}/>
+                        <ButtonIcon 
+                            type="button" 
+                            icon={TrashIcon} 
+                            onClick={handleClickDeleteTask} 
+                            loading={loading}
+                            handling={isDeletingTask}
+                        />
                         <ButtonIcon
                             type="button"
                             icon={PencilIcon}
                             variant="secondary"
                             onClick={handleEditTask}
+                            loading={loading}
                         />
                     </div>
                 </div>
@@ -98,7 +110,7 @@ export function TaskItem({ task }: TaskItemProps) {
                             icon={Xicon}
                             onClick={handleExitEditTask}
                         />
-                        <ButtonIcon type="submit" icon={CheckIcon} variant="tertiary" />
+                        <ButtonIcon type="submit" icon={CheckIcon} variant="tertiary" handling={isUpdatingTask} />
                     </div>
                 </form>
             )}

@@ -1,9 +1,13 @@
 import { useLocalStorage } from "./useLocalStorage";
 import { type Task, TASK_KEY, TaskState } from "../models/task";
+import { delay } from "../helpers/utils";
+import React from "react";
 
 
 export function useTask(){
     const[tasks,setTasks]= useLocalStorage<Task[]>(TASK_KEY, []);
+    const[isUpdatingTask, setIsUpdatingTask] = React.useState(false);
+    const[isDeletingTask, setIsDeletingTask] = React.useState(false);
 
     function prepareTask(){
         setTasks([...tasks, {
@@ -13,12 +17,16 @@ export function useTask(){
         }])
     }
 
-    function updateTask(id: string, payload: {title: Task["title"]} ) {
+    async function updateTask(id: string, payload: {title: Task["title"]} ) {
+        setIsUpdatingTask(true);
+        await delay(1000);
+
         setTasks(
             tasks.map((task)=> task.id === id ? {
                 ...task, state: TaskState.Created, ...payload
             } : task)
         )
+        setIsUpdatingTask(false);
     }
 
     function updateTaskStatus(id: string, conclued: boolean){
@@ -27,14 +35,22 @@ export function useTask(){
         )
     }
 
-    function deleteTask(id: string){
+    async function deleteTask(id: string){
+        setIsDeletingTask(true);
+
+        await delay(1000);
+
         setTasks(tasks.filter((task)=> task.id !== id));
+
+        setIsDeletingTask(false);
     }
 
     return{
         prepareTask,
         updateTask,
         updateTaskStatus,
-        deleteTask
+        deleteTask,
+        isUpdatingTask,
+        isDeletingTask
     }
 }
