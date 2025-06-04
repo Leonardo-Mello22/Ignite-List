@@ -1,4 +1,4 @@
-import useLocalStorage from "use-local-storage";
+import {useLocalStorage} from "./useLocalStorage";
 import { TASK_KEY, type Task } from "../models/task";
 
 export function useTasks() {
